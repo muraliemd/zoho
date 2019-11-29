@@ -1,3 +1,4 @@
+//Find Biggest number in given array
 class prgm2
 {
 	public static void main(String[] args)
