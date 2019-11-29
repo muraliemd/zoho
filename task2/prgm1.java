@@ -1,6 +1,6 @@
 package task2;
 import java.util.Scanner;
-
+//Concatenate the two Strings
 
 class prgm1
 {
