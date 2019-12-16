@@ -1,0 +1,211 @@
+
+<html>
+  <head>
+    <title>
+      Note Maker
+    </title>
+    <style>
+      textarea {
+        display: block;
+        font: 0.9em/1.5em "handwriting", sans-serif;
+        align-content: center;
+        width: 340px;
+        height: 360px;
+        resize: auto;
+        overflow: auto;
+      }
+      input[type="text"] {
+        font: 0.9em/1.5em "handwriting", sans-serif;
+        display: block;
+        align-content: center;
+        width: 340px;
+        width: 340px;
+        height: 50px;
+      }
+      legend {
+        background-color: #000;
+        color: #fff;
+        padding: 3px 6px;
+        font-size: larger;
+      }
+
+    
+    </style>
+
+<script>
+  
+    var xmlHttp;
+    if (window.XMLHttpRequest)
+    {
+      xmlHttp = new XMLHttpRequest();
+    }
+    else
+    {
+      xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    
+    function validate()
+    {
+      if(document.getElementById("title").value=="")
+      {
+        document.getElementById("titleLabel").style.visibility="visible";
+        return -1;
+      }
+      if(document.getElementById("content").value=="")
+      {
+        document.getElementById("contentLabel").style.visibility="visible";
+        return -1;
+      }
+    }
+
+    function get()
+    {
+
+      if(document.getElementById("title").value=="")
+      {
+        document.getElementById("titleLabel").style.visibility="visible";
+        return;
+      }
+      document.getElementById("titleLabel").style.visibility="hidden";
+      document.getElementById("contentLabel").style.visibility="hidden";
+
+     xmlHttp.onreadystatechange=callback;
+     var url ="get"+"?title="+document.getElementById("title").value;
+     xmlHttp.open("GET",url,true);
+     xmlHttp.send();
+    }
+
+    function post()
+    {
+      if( validate()==-1)
+       return;
+      document.getElementById("titleLabel").style.visibility="hidden";
+      document.getElementById("contentLabel").style.visibility="hidden";
+
+      xmlHttp.onreadystatechange=callback;
+      var url ="post"+"?title="+document.getElementById("title").value+"&content="+document.getElementById("content").value;
+      xmlHttp.open("GET",url,true);
+      xmlHttp.send();
+    }
+
+    function update()
+    {
+      if( validate()==-1)
+       return;
+      document.getElementById("titleLabel").style.visibility="hidden";
+      document.getElementById("contentLabel").style.visibility="hidden";
+      xmlHttp.onreadystatechange=callback;
+      var url ="update"+"?title="+document.getElementById("title").value+"&content="+document.getElementById("content").value;
+      xmlHttp.open("GET",url,true);
+      xmlHttp.send();
+    }
+
+    function del()
+    {
+      if(document.getElementById("title").value=="")
+      {
+        document.getElementById("titleLabel").style.visibility="visible";
+        return;
+      }
+      document.getElementById("titleLabel").style.visibility="hidden";
+      document.getElementById("contentLabel").style.visibility="hidden";
+
+      xmlHttp.onreadystatechange=callback;
+      var url ="del"+"?title="+document.getElementById("title").value;
+      xmlHttp.open("GET",url,true);
+      xmlHttp.send();
+    }
+
+
+    function callback() 
+    {
+      if(xmlHttp.readyState==4 && xmlHttp.status==200) 
+      {
+         var value = xmlHttp.responseText;
+         
+         if(value==-1)
+         {
+          document.getElementById("content").value="";
+          document.getElementById("p1").innerHTML = "Title Already Exists";
+          return;
+         }
+
+         if(value==0)
+         {
+          document.getElementById("p1").innerHTML = "Some error in DB, Operation not success";
+          return;
+         }
+
+         if(value==1)
+         {
+          document.getElementById("p1").innerHTML = "Inserted Successfully";
+          return;
+         }
+
+         if(value==2)
+         {
+          document.getElementById("p1").innerHTML = "Updated Successfully";
+          return;
+         }
+
+         if(value==3)
+         {
+          document.getElementById("p1").innerHTML = "Deleted Successfully";
+          document.getElementById("content").value="";
+          document.getElementById("title").value="";
+          return;
+         }
+
+          
+         if(value==404)
+         {
+          document.getElementById("p1").innerHTML = "Title Not Exist";
+          document.getElementById("content").value="";
+          return;
+         } 
+
+
+        
+          document.getElementById("content").value=value;
+          document.getElementById("p1").innerHTML = "Retrieved Succesfully";
+         
+        
+      }
+    }
+  
+</script>
+
+
+  </head>
+
+  <body>
+    <form action="" method="GET" style="width:fit-content">
+      <fieldset>
+        <legend>Note Maker</legend>
+        <br />
+        <input type="text" placeholder="Title" name="title" id="title" required/>
+        <label id="titleLabel" style="visibility: hidden; color: crimson;">Please Enter the Title</label>
+        <br />
+        <br />
+        <textarea placeholder="Content" name="content" id="content"></textarea>
+        <label id="contentLabel" style="visibility: hidden; color: crimson;">Please Enter the Content</label>
+        <br />
+        <br />
+        <fieldset>
+          <input type="button" value="Get" onclick="get()"/>
+          <input type="button" value="Post" onclick="post()"/>
+          <input type="button" value="Update" onclick="update()"/>
+          <input type="button" value="Delete" onclick="del()"/>
+          <input type="reset" value="reset" />
+        </fieldset>
+       <br>
+       Message: 
+        <label id="p1"></label>
+      </fieldset>
+    </form>
+
+
+   
+    
+  </body>
+</html>
