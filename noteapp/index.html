@@ -1,11 +1,12 @@
-
 <html>
   <head>
     <title>
       Note Maker
     </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <style>
-      textarea {
+      textarea 
+      {
         display: block;
         font: 0.9em/1.5em "handwriting", sans-serif;
         align-content: center;
@@ -14,7 +15,8 @@
         resize: auto;
         overflow: auto;
       }
-      input[type="text"] {
+      input[type="text"] 
+      {
         font: 0.9em/1.5em "handwriting", sans-serif;
         display: block;
         align-content: center;
@@ -22,190 +24,361 @@
         width: 340px;
         height: 50px;
       }
-      legend {
+      legend 
+      {
         background-color: #000;
         color: #fff;
         padding: 3px 6px;
         font-size: larger;
       }
-
-    
+      p #x
+      {
+        width: 600px;
+        display: flex;  
+        border: 1px solid rgb(42, 113, 228);
+        padding: 10px;
+        margin: 10px;
+      }
+      .modal 
+      {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      .modal-content 
+      {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
     </style>
 
-<script>
-  
-    var xmlHttp;
-    if (window.XMLHttpRequest)
-    {
-      xmlHttp = new XMLHttpRequest();
-    }
-    else
-    {
-      xmlHttp = new ActiveXObject("Microsoft.XMLHTTP");
-    }
-    
-    function validate()
-    {
-      if(document.getElementById("title").value=="")
+    <script>
+      var xmlHttp;
+      var json;
+
+      if (window.XMLHttpRequest) 
       {
-        document.getElementById("titleLabel").style.visibility="visible";
-        return -1;
+        xmlHttp = new XMLHttpRequest(); //For latest browsers
+      } 
+      else 
+      {
+        xmlHttp = new ActiveXObject("Microsoft.XMLHTTP"); //For IE oldest browsers
       }
-      if(document.getElementById("content").value=="")
+      
+      function updateJson()
       {
-        document.getElementById("contentLabel").style.visibility="visible";
-        return -1;
+        if(document.getElementById("contentpopup").value=="")
+        {
+          alert("Cant update empty value");
+          return;
+        }
+        xmlHttp.onreadystatechange = callback;
+        var url = "update" + "?title=" + document.getElementById("titlepopup").value + "&content=" + document.getElementById("contentpopup").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
       }
-    }
 
-    function get()
-    {
-
-      if(document.getElementById("title").value=="")
+      function deleteJson()
       {
-        document.getElementById("titleLabel").style.visibility="visible";
-        return;
+        xmlHttp.onreadystatechange = callback;
+        var url = "del" + "?title=" + document.getElementById("titlepopup").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
       }
-      document.getElementById("titleLabel").style.visibility="hidden";
-      document.getElementById("contentLabel").style.visibility="hidden";
 
-     xmlHttp.onreadystatechange=callback;
-     var url ="get"+"?title="+document.getElementById("title").value;
-     xmlHttp.open("GET",url,true);
-     xmlHttp.send();
-    }
 
-    function post()
-    {
-      if( validate()==-1)
-       return;
-      document.getElementById("titleLabel").style.visibility="hidden";
-      document.getElementById("contentLabel").style.visibility="hidden";
-
-      xmlHttp.onreadystatechange=callback;
-      var url ="post"+"?title="+document.getElementById("title").value+"&content="+document.getElementById("content").value;
-      xmlHttp.open("GET",url,true);
-      xmlHttp.send();
-    }
-
-    function update()
-    {
-      if( validate()==-1)
-       return;
-      document.getElementById("titleLabel").style.visibility="hidden";
-      document.getElementById("contentLabel").style.visibility="hidden";
-      xmlHttp.onreadystatechange=callback;
-      var url ="update"+"?title="+document.getElementById("title").value+"&content="+document.getElementById("content").value;
-      xmlHttp.open("GET",url,true);
-      xmlHttp.send();
-    }
-
-    function del()
-    {
-      if(document.getElementById("title").value=="")
+      function getAllNotes()
       {
-        document.getElementById("titleLabel").style.visibility="visible";
-        return;
+        xmlHttp.onreadystatechange = call;
+        var url = "getnotes";
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
       }
-      document.getElementById("titleLabel").style.visibility="hidden";
-      document.getElementById("contentLabel").style.visibility="hidden";
-
-      xmlHttp.onreadystatechange=callback;
-      var url ="del"+"?title="+document.getElementById("title").value;
-      xmlHttp.open("GET",url,true);
-      xmlHttp.send();
-    }
-
-
-    function callback() 
-    {
-      if(xmlHttp.readyState==4 && xmlHttp.status==200) 
+     
+      function validate() 
       {
-         var value = xmlHttp.responseText;
-         
-         if(value==-1)
-         {
-          document.getElementById("content").value="";
-          document.getElementById("p1").innerHTML = "Title Already Exists";
+        //To validate the title and content textbox as non empty
+        if (document.getElementById("title").value == "") 
+        {
+          document.getElementById("titleLabel").style.visibility = "visible";
+          return -1;
+        }
+        if (document.getElementById("content").value == "") 
+        {
+          document.getElementById("contentLabel").style.visibility = "visible";
+          return -1;
+        }
+      }
+
+      function get() 
+      {
+        if (document.getElementById("title").value == "")
+        {
+          //if title box is empty, return.
+          document.getElementById("titleLabel").style.visibility = "visible";
           return;
-         }
+        }
+        document.getElementById("titleLabel").style.visibility = "hidden";
+        document.getElementById("contentLabel").style.visibility = "hidden";
 
-         if(value==0)
-         {
-          document.getElementById("p1").innerHTML = "Some error in DB, Operation not success";
+        xmlHttp.onreadystatechange = callback;
+        var url = "get" + "?title=" + document.getElementById("title").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+      }
+
+      function post() 
+      {
+        if (validate() == -1) 
+        {
           return;
-         }
+        }
 
-         if(value==1)
-         {
-          document.getElementById("p1").innerHTML = "Inserted Successfully";
+        document.getElementById("titleLabel").style.visibility = "hidden";
+        document.getElementById("contentLabel").style.visibility = "hidden";
+
+        xmlHttp.onreadystatechange = callback;
+        var url = "post" + "?title=" + document.getElementById("title").value + "&content=" + document.getElementById("content").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+      }
+
+      function update() 
+      {
+        if (validate() == -1) 
+        {
           return;
-         }
+        }
 
-         if(value==2)
-         {
-          document.getElementById("p1").innerHTML = "Updated Successfully";
+        document.getElementById("titleLabel").style.visibility = "hidden";
+        document.getElementById("contentLabel").style.visibility = "hidden";
+
+        xmlHttp.onreadystatechange = callback;
+        var url = "update" + "?title=" + document.getElementById("title").value + "&content=" + document.getElementById("content").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+      }
+
+      
+      function del() 
+      {
+        if (document.getElementById("title").value == "") 
+        {
+          document.getElementById("titleLabel").style.visibility = "visible";
           return;
-         }
+        }
+        document.getElementById("titleLabel").style.visibility = "hidden";
+        document.getElementById("contentLabel").style.visibility = "hidden";
 
-         if(value==3)
-         {
-          document.getElementById("p1").innerHTML = "Deleted Successfully";
-          document.getElementById("content").value="";
-          document.getElementById("title").value="";
-          return;
-         }
+        xmlHttp.onreadystatechange = callback;
+        var url = "del" + "?title=" + document.getElementById("title").value;
+        xmlHttp.open("GET", url, true);
+        xmlHttp.send();
+      }
 
-          
-         if(value==404)
-         {
-          document.getElementById("p1").innerHTML = "Title Not Exist";
-          document.getElementById("content").value="";
-          return;
-         } 
+     
+      function call()
+      {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) 
+        {
+          var responseText = xmlHttp.responseText;
+        }
+        document.getElementById("jsonp1").innerHTML = "";
+        let json= JSON.parse(responseText);
+        document.getElementById("jsonp1").appendChild(makeUL(json));
+      }
+     
 
+      function callback() 
+      {
+        if (xmlHttp.readyState == 4 && xmlHttp.status == 200) 
+        {
+          var value = xmlHttp.responseText;
+          if (value == -1) 
+          {
+            //Title exist
+            document.getElementById("content").value = "";
+            document.getElementById("p1").innerHTML = "Title Already Exists";
+            return;
+          }
 
-        
-          document.getElementById("content").value=value;
+          if (value == 0) 
+          {
+            //Error in sql operation
+            document.getElementById("p1").innerHTML =
+              "Some error in DB, Operation not success";
+            return;
+          }
+
+          if (value == 1) 
+          {
+            //Inserted Successfully
+            document.getElementById("p1").innerHTML = "Inserted Successfully";
+            getAllNotes();
+            return;
+          }
+
+          if (value == 2) 
+          {
+            //Updated Successfully
+            document.getElementById("content").value = "";
+            document.getElementById("p1").innerHTML = "Updated Successfully";
+            getAllNotes();
+            return;
+          }
+
+          if (value == 3) 
+          {
+            // Deleted Successfully
+            document.getElementById("p1").innerHTML = "Deleted Successfully";
+            document.getElementById("content").value = "";
+            document.getElementById("title").value = "";
+            getAllNotes();
+            hidePopup();
+            return;
+          }
+
+          if (value == 404) 
+          {
+            //Title Not Exists
+            document.getElementById("p1").innerHTML = "Title Not Exist";
+            document.getElementById("content").value = "";
+            return;
+          }
+
+          //Get operation`
+          document.getElementById("content").value = JSON.parse(value); //Parsing (Server response)JSON to string
           document.getElementById("p1").innerHTML = "Retrieved Succesfully";
-         
-        
+        }
       }
-    }
-  
-</script>
 
+      var title =[];
+      var content=[];
+      function makeUL(json) 
+      {
+        // Create the list element:
+        var list = document.createElement("div");
+        list.setAttribute("id","divtag")
+        for (var j = 0; j < json.length; j++) 
+        {
+         
+          var item = document.createElement("p");
+          item.setAttribute("id","x");
+         
+          var span1 = document.createElement("span");
+          span1.appendChild(document.createTextNode(Object.values(json[j])[0]));
+          title.push(Object.values(json[j])[0]);
 
+          var span2 = document.createElement("span");
+          span2.appendChild(document.createTextNode(Object.values(json[j])[1]));
+          content.push(Object.values(json[j])[1]);
+          span2.setAttribute("id","j"+j)
+          span2.setAttribute("style","padding-top:20px");
+          span2.addEventListener("click",function() {
+                                                      document.getElementById("myModal").style.display="block";
+          
+                                                      for(var k=0;k<title.length;k++)
+                                                      {
+                                                        if(this.innerHTML==content[k])
+                                                        {
+                                                          document.getElementById("titlepopup").value=title[k];
+                                                        }
+                                                      }
+                                                      document.getElementById("contentpopup").value=this.innerHTML;
+                                                      })
+          item.appendChild(span1); 
+          item.appendChild(span2);
+
+          list.appendChild(item);
+        }
+
+        // Finally, return the constructed list:
+        return list;
+      }
+
+      window.onclick = function(event) 
+      {
+        if (event.target ==  document.getElementById("myModal")) 
+        {
+          hidePopup();
+        }
+      }
+
+      function hidePopup()
+      {
+          document.getElementById("myModal").style.display = "none";
+      }
+
+      window.onload = function()
+      {
+        getAllNotes();
+      }
+
+    </script>
   </head>
 
   <body>
-    <form action="" method="GET" style="width:fit-content">
-      <fieldset>
-        <legend>Note Maker</legend>
-        <br />
-        <input type="text" placeholder="Title" name="title" id="title" required/>
-        <label id="titleLabel" style="visibility: hidden; color: crimson;">Please Enter the Title</label>
-        <br />
-        <br />
-        <textarea placeholder="Content" name="content" id="content"></textarea>
-        <label id="contentLabel" style="visibility: hidden; color: crimson;">Please Enter the Content</label>
-        <br />
-        <br />
-        <fieldset>
-          <input type="button" value="Get" onclick="get()"/>
-          <input type="button" value="Post" onclick="post()"/>
-          <input type="button" value="Update" onclick="update()"/>
-          <input type="button" value="Delete" onclick="del()"/>
-          <input type="reset" value="reset" />
-        </fieldset>
-       <br>
-       Message: 
-        <label id="p1"></label>
-      </fieldset>
-    </form>
-
-
-   
-    
+    <div style="display: flex;  flex-wrap: wrap; align-content: space-around;">
+      <div>
+        <form action="" method="GET" style="width:25%">
+          <fieldset>
+            <legend>Note Maker</legend>
+            <br />
+            <input type="text" placeholder="Title" name="title" id="title" required/>
+            <label id="titleLabel" style="visibility: hidden; color: crimson;">Please Enter the Title</label>
+            <br />
+            <br />
+            <textarea placeholder="Content" name="content" id="content"></textarea>
+            <label id="contentLabel" style="visibility: hidden; color: crimson;">Please Enter the Content</label>
+            <br />
+            <br />
+            <fieldset>
+              <input type="button" value="Get" onclick="get()" />
+              <input type="button" value="Post" onclick="post()" />
+              <input type="button" value="Update" onclick="update()" />
+              <input type="button" value="Delete" onclick="del()" />
+              <input type="reset" value="reset" />
+            </fieldset>
+            <br />
+            Message:
+            <label id="p1"></label>
+          </fieldset>
+        </form>
+      </div>
+      <div>
+        <form>
+          <fieldset>
+            <legend>Notes</legend>
+            <p id="jsonp1">
+                <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                      <i class="material-icons" style='float:right;' onclick="hidePopup()">close</i>
+                      Title:
+                      
+                     <input type="text" id="titlepopup" disabled style="padding:8px 8px; margin: 5px;">
+                     
+                      Content:
+                      <input type="text" id="contentpopup" style="padding:8px; margin:5px;"/>
+                      <input type="button" value="update" onclick="updateJson()"/>
+                      <i class="material-icons" style="padding: 10px;" onclick="deleteJson()">delete</i>
+                    </div>  
+                </div>
+            </p>
+          </fieldset>
+        </form>
+      </div>
+    </div>
   </body>
 </html>

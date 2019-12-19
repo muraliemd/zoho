@@ -20,29 +20,23 @@ public class DeleteServlet extends HttpServlet
 		{
 			Class.forName("com.mysql.jdbc.Driver");
 			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/notes", "root", "");
-			
 			Statement stmt = con.createStatement();
 			String query = "select * from note where title=\"" + title + "\"";
 			ResultSet resultSet = stmt.executeQuery(query);
-
 			if (resultSet.next()) 
 			{
 				PreparedStatement insertstmt=con.prepareStatement("delete from note where title=?");  
 				insertstmt.setString(1,title);  
 				  
 				int i=insertstmt.executeUpdate();  
-				
 				if(i>0)
-				out.println(3);
-				
-				
+				out.println(3);		//Delete Succesfully
 			}
 			
 			else
 			{
 				out.println(404); //Title Not Exist
 			}
-			
 		}
     	 
     	catch (Exception e) 

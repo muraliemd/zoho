@@ -20,8 +20,7 @@ public class UpdateServlet extends HttpServlet
 		try 
 		{
 			Class.forName("com.mysql.jdbc.Driver");
-			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/notes", "root", "");
-			
+			Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/notes", "root", "");		
 			Statement stmt = con.createStatement();
 			String query = "select * from note where title=\"" + title + "\"";
 			ResultSet resultSet = stmt.executeQuery(query);
@@ -33,16 +32,14 @@ public class UpdateServlet extends HttpServlet
 				insertstmt.setString(1,content);  
 				  
 				int i=insertstmt.executeUpdate();  
-				
-				if(i>0)
+				if(i>0)						//Update successfully
 				out.println(2);
 			}
 			
 			else
 			{
 				out.println(404); //Title Not Exist
-			}
-			
+			}		
 		}
     	 
     	catch (Exception e) 
