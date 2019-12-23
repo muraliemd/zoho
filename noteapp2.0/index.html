@@ -1,0 +1,124 @@
+<html>
+  <head>
+    <title>
+      Note Maker
+    </title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <style>
+      textarea 
+      {
+        display: block;
+        font: 0.9em/1.5em "handwriting", sans-serif;
+        align-content: center;
+        width: 340px;
+        height: 360px;
+        resize: auto;
+        overflow: auto;
+      }
+      input[type="text"] 
+      {
+        font: 0.9em/1.5em "handwriting", sans-serif;
+        display: block;
+        align-content: center;
+        width: 340px;
+        width: 340px;
+        height: 50px;
+      }
+      legend 
+      {
+        background-color: #000;
+        color: #fff;
+        padding: 3px 6px;
+        font-size: larger;
+      }
+      p .allNotesP
+      {
+        width: 600px;
+        display: flex;  
+        border: 1px solid rgb(42, 113, 228);
+        padding: 10px;
+        margin: 10px;
+      }
+      .modal 
+      {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: scroll; /* Enable scroll if needed */
+        background-color: rgb(0,0,0); /* Fallback color */
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+      }
+      .modal-content 
+      {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+        overflow: scroll;
+      }
+    </style>
+
+    <script src="myScript.js">
+    </script>
+  </head>
+
+  <body>
+    <div style="display: flex;  flex-wrap: wrap; align-content: space-around;">
+      <div>
+        <form action="" method="GET" style="width:25%">
+          <fieldset>
+            <legend>Note Maker</legend>
+            <br />
+            <input type="text" placeholder="Title" name="title" id="title" required/>
+            <label id="titleLabel" style="visibility: hidden; color: crimson;">Please Enter the Title</label>
+            <br />
+            <br />
+            <textarea placeholder="Content" name="content" id="content"></textarea>
+            <label id="contentLabel" style="visibility: hidden; color: crimson; white-space: pre-wrap;">Please Enter the Content</label>
+            <br />
+            <br />
+            <fieldset>
+              <input type="button" value="Get" onclick="get()" />
+              <input type="button" value="Post" onclick="post()" />
+              <input type="button" value="Update" onclick="update()" />
+              <input type="button" value="Delete" onclick="del()" />
+              <input type="reset" value="reset" />
+            </fieldset>
+            <br />
+            Message:
+            <label id="messageLabel"></label>
+          </fieldset>
+        </form>
+      </div>
+      <div>
+        <form>
+          <fieldset>
+            <legend>Notes</legend>
+            <p id="jsonp1">
+                <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                      <i class="material-icons" style='float:right;' onclick="hidePopup()">close</i>
+                      Title:
+                      
+                     <input type="text" id="titlepopup" disabled style="padding:8px 8px; margin: 5px;">
+                     
+                      Content:
+                      <input type="text" id="contentpopup" style="padding:8px; margin:5px; width: 80%; overflow: scroll;"/>
+                      <input type="button" value="update" onclick="updateJson()"/>
+                      <i class="material-icons" style="padding: 10px;" onclick="deleteJson()">delete</i>
+                    </div>  
+                </div>
+            </p>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </body>
+</html>
