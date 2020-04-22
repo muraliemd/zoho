@@ -17,3 +17,4 @@ public class Prgm1
 		System.out.println("Output String:"+s1);
 	}
 }
+//Changed
